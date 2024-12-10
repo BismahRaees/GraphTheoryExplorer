@@ -6,7 +6,7 @@
 using namespace std;
 
 const int MAX_ROWS = 50;
-const int MAX_COLS = 10;
+const int MAX_COLS = 6;
 
 int loadDataset(const string& filename, string data[MAX_ROWS][MAX_COLS]) {
     ifstream file(filename);
