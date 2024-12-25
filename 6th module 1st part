@@ -1,0 +1,55 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <sstream>
+using namespace std;
+
+int main()
+{
+    ifstream file("C:\\Friends Dataset.csv");
+    if (!file)
+    {
+        cout << "Error: File not found" << endl;
+        return 1;
+    }
+
+    string students[50];
+    string friends[50][5];
+    int studentCount = 0;
+
+    string line;
+    while (getline(file, line) && studentCount < 50)
+    {
+        stringstream ss(line);
+        string name;
+        int friendIndex = 0;
+
+        while (getline(ss, name, ',') && friendIndex < 6)
+        {
+            if (friendIndex == 0)
+                students[studentCount] = name;
+            else
+                friends[studentCount][friendIndex - 1] = name;
+            friendIndex++;
+        }
+
+        studentCount++;
+    }
+
+    file.close(); // Close the file
+
+    int alpha = 3;
+
+    for (int i = 0; i < studentCount; i++)
+    {
+        for (int j = i + 1; j < studentCount; j++)
+        {
+            bool areDirectFriends = false;
+            for (int k = 0; k < 5; k++)
+            {
+                if (friends[i][k] == students[j])
+                {
+                    areDirectFriends = true;
+                    break;
+                }
+            }
