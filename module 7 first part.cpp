@@ -11,7 +11,7 @@
 
 int main()
 {
-    QApplication app(__argc, __argv); // Use predefined global variables for QApplication
+    QApplication app(__argc, __argv); 
     QWidget window;
     window.setWindowTitle("Friendship Finder");
     window.resize(700, 500);
