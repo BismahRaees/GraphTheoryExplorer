@@ -1,0 +1,132 @@
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
+
+using namespace std;
+
+class FriendshipApp
+{
+public:
+    void loadDataset()
+    {
+        string filePath;
+        cout << "Enter the path to the dataset file (CSV format): ";
+        cin >> filePath;
+
+        processDataset(filePath);
+    }
+
+private:
+    void processDataset(const string &filePath)
+    {
+        ifstream file("C:\\Friends Dataset.csv");
+        if (!file)
+        {
+            cout << "Error opening file." << endl;
+            return;
+        }
+
+        string students[50]; 
+        string friends[50][5]; 
+        int studentCount = 0;
+
+        string line;
+        while (getline(file, line) && studentCount < 50)
+        {
+            stringstream ss(line);
+            string name;
+            int friendIndex = 0;
+
+            while (getline(ss, name, ',') && friendIndex < 6)
+            {
+                if (friendIndex == 0)
+                    students[studentCount] = name;
+                else
+                    friends[studentCount][friendIndex - 1] = name;
+                friendIndex++;
+            }
+
+            studentCount++;
+        }
+
+        file.close();  
+
+        int directFriendCount[50] = {0}; 
+        int commonFriendCount[50] = {0}; 
+
+        for (int i = 0; i < studentCount; i++)
+        {
+            for (int j = i + 1; j < studentCount; j++)
+            {
+                bool areDirectFriends = false;
+                for (int k = 0; k < 5; k++)
+                {
+                    if (friends[i][k] == students[j])
+                    {
+                        areDirectFriends = true;
+                        break;
+                    }
+                }
+
+                if (areDirectFriends)
+                {
+                    directFriendCount[i]++;
+                    directFriendCount[j]++;
+                }
+                else
+                {
+                    int commonCount = 0;
+
+                    for (int k = 0; k < 5; k++)
+                    {
+                        for (int l = 0; l < 5; l++)
+                        {
+                            if (friends[i][k] == friends[j][l] && !friends[i][k].empty())
+                            {
+                                commonCount++;
+                            }
+                        }
+                    }
+                    commonFriendCount[i] += commonCount;
+                    commonFriendCount[j] += commonCount;
+                }
+            }
+        }
+
+        int maxDirectFriends = directFriendCount[0];
+        int maxCommonFriends = commonFriendCount[0];
+
+        for (int i = 1; i < studentCount; i++)
+        {
+            if (directFriendCount[i] > maxDirectFriends)
+                maxDirectFriends = directFriendCount[i];
+
+            if (commonFriendCount[i] > maxCommonFriends)
+                maxCommonFriends = commonFriendCount[i];
+        }
+
+        cout << "\nBroadcast Points (Most Connected Students):\n";
+
+        for (int i = 0; i < studentCount; i++)
+        {
+            if (directFriendCount[i] == maxDirectFriends)
+            {
+                cout << students[i] << " (Direct Friends: " << directFriendCount[i] << ")\n";
+            }
+            if (commonFriendCount[i] == maxCommonFriends)
+            {
+                cout << students[i] << " (Common Friends: " << commonFriendCount[i] << ")\n";
+            }
+        }
+    }
+};
+
+int main()
+{
+    FriendshipApp app;
+    app.loadDataset();
+
+    return 0;
+}
+
